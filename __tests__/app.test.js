@@ -68,3 +68,68 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("Patch /api/articles/:article_id", () => {
+  test("patch /api/articles/:article_id, responds with a status code 200 and updates the votes property with given value", () => {
+    const incVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(incVote)
+      .expect(200)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual({
+          article_id: 3,
+          title: "Eight pug gifs that remind me of mitch",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "some gifs",
+          created_at: "2020-11-03T09:12:00.000Z",
+          votes: 1,
+        });
+      });
+  });
+
+  test("patch /api/articles/:article_id, responds with a status code 400 when no body given", () => {
+    const incVote = {};
+    return request(app)
+      .patch("/api/articles/3")
+      .send(incVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("patch /api/articles/:article_id,endpoint should respond with psql error with a status 400 if article id is of wrong data type", () => {
+    const incVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/a")
+      .send(incVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("patch /api/articles/:article_id, responds with a status code 400 when wrong key is passed in body", () => {
+    const incVote = { invotes: 1 };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(incVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("patch /api/articles/:article_id, responds with a psql error status code 400 when key value is not a number", () => {
+    const incVote = { inc_votes: "a" };
+    return request(app)
+      .patch("/api/articles/3")
+      .send(incVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+});
