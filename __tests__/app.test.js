@@ -89,7 +89,7 @@ describe("Patch /api/articles/:article_id", () => {
       });
   });
 
-  test("patch /api/articles/:article_id, responds with a status code 400 when no bosy given", () => {
+  test("patch /api/articles/:article_id, responds with a status code 400 when no body given", () => {
     const incVote = {};
     return request(app)
       .patch("/api/articles/3")
