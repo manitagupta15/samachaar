@@ -32,3 +32,15 @@ exports.patchArticle = (article_id, inc_votes) => {
       return article.rows[0];
     });
 };
+
+exports.fetchArticlesWithCommentCount = () => {
+  return db
+    .query(
+      `SELECT articles.*, COUNT(comments.article_id) as comment_count FROM articles
+  JOIN comments ON articles.article_id = comments.article_id
+  GROUP BY articles.article_id ORDER BY articles.article_id DESC`
+    )
+    .then(({ rows }) => {
+      return rows;
+    });
+};
