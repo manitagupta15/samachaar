@@ -1,9 +1,8 @@
 exports.psqlErrorHandler = (err, req, res, next) => {
-  console.log(err);
+  // console.log(err);
   if (err?.code) {
     res.status(400).send({ msg: "Bad Request" });
-  }
-  removeEventListener;
+  } else next(err);
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
