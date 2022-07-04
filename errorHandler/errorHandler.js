@@ -3,14 +3,13 @@ exports.psqlErrorHandler = (err, req, res, next) => {
   if (err?.code) {
     res.status(400).send({ msg: "Bad Request" });
   }
-  next(err);
+  removeEventListener;
 };
 
 exports.handleCustomErrors = (err, req, res, next) => {
   if (err.status && err.msg) {
     res.status(err.status).send({ msg: err.msg });
-  }
-  next(err);
+  } else next(err);
 };
 
 exports.unhandledErrors = (err, req, res, next) => {
