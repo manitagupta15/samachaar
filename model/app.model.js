@@ -21,11 +21,8 @@ exports.fetchArticles = (article_id) => {
 };
 
 exports.patchArticle = (article_id, inc_votes) => {
-  if (inc_votes === undefined)
-    return Promise.reject({
-      status: 400,
-      msg: "Bad Request, inc_votes not given",
-    });
+  const validKey = [inc_votes];
+
   return db
     .query(
       `UPDATE articles SET votes = votes+$1 WHERE article_id = $2 RETURNING *`,

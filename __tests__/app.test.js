@@ -96,7 +96,7 @@ describe("Patch /api/articles/:article_id", () => {
       .send(incVote)
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Bad Request, inc_votes not given");
+        expect(msg).toBe("Bad Request");
       });
   });
 
@@ -118,7 +118,7 @@ describe("Patch /api/articles/:article_id", () => {
       .send(incVote)
       .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Bad Request, inc_votes not given");
+        expect(msg).toBe("Bad Request");
       });
   });
 
