@@ -1,6 +1,9 @@
 const express = require("express");
 const app = express();
-const { getTopics, getArticles } = require("./controller/app.controller");
+const {
+  getTopics,
+  getArticlesByArticleId,
+} = require("./controller/app.controller");
 
 const {
   psqlErrorHandler,
@@ -10,7 +13,7 @@ const {
 
 app.get("/api/topics", getTopics);
 
-app.get("/api/articles/:article_id", getArticles);
+app.get("/api/articles/:article_id", getArticlesByArticleId);
 
 //error handlers
 app.use(psqlErrorHandler);

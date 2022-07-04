@@ -1,5 +1,5 @@
 exports.psqlErrorHandler = (err, req, res, next) => {
-  console.log(err);
+  // console.log(err);
   if (err?.code) {
     res.status(400).send({ msg: "Bad Request" });
   } else next(err);
