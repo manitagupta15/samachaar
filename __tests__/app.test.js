@@ -68,3 +68,24 @@ describe("GET /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/users", () => {
+  test("GET /api/users endpoints responds with status 200 and an array of object, each with property username,name,avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
+      });
+  });
+});

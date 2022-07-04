@@ -3,6 +3,7 @@ const app = express();
 const {
   getTopics,
   getArticlesByArticleId,
+  getUsers,
 } = require("./controller/app.controller");
 
 const {
@@ -14,6 +15,8 @@ const {
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticlesByArticleId);
+
+app.get("/api/users", getUsers);
 
 //error handlers
 app.use(psqlErrorHandler);
