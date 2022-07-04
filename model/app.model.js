@@ -28,7 +28,8 @@ exports.patchArticle = (article_id, inc_votes) => {
     });
   return db
     .query(
-      `UPDATE articles SET votes = votes+${inc_votes} WHERE article_id = ${article_id} RETURNING *`
+      `UPDATE articles SET votes = votes+$1 WHERE article_id = $2 RETURNING *`,
+      [inc_votes, article_id]
     )
     .then((article) => {
       return article.rows[0];
