@@ -18,7 +18,9 @@ const {
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticlesByArticleId);
+
 app.patch("/api/articles/:article_id", patchArticleByArticleId);
+
 //error handlers
 app.use(psqlErrorHandler);
 app.use(handleCustomErrors);
