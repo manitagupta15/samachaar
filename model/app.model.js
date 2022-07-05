@@ -75,3 +75,19 @@ exports.fetchCommentsByArticleId = (article_id) => {
     });
 };
 
+exports.fetchArticlesWithCommentCount = () => {
+  return db
+    .query(
+      `SELECT articles.*, COUNT(comments.article_id) as comment_count FROM articles
+  JOIN comments ON articles.article_id = comments.article_id
+  GROUP BY articles.article_id ORDER BY articles.article_id DESC`
+    )
+    .then(({ rows }) => {
+      const articlesWithFormattedCount = rows.map((article) => {
+        const articleCopy = { ...article };
+        articleCopy.comment_count = +article.comment_count;
+        return articleCopy;
+      });
+      return articlesWithFormattedCount;
+    });
+};

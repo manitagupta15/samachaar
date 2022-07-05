@@ -236,16 +236,3 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-describe("GET /api/articles (queries)", () => {
-  test("GET /api/articles (queries) sort_by, which sorts the articles by any valid column (defaults to date)", () => {
-    return request(app)
-      .get("/api/articles?sort_by=article_id")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles).toBeSortedBy("article_id", {
-            descending: true,
-            coerce: false,
-          });
-      });
-  });
-});
