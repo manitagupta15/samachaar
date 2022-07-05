@@ -221,25 +221,25 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("POST /api/articles/:article_id/comments responds with status code 404 username is not a valid username in users table", () => {
+  test("POST /api/articles/:article_id/comments responds with status code 400 username is not a valid username in users table", () => {
     const newComment = { username: "Hello", body: "what a lovely story!!" };
     return request(app)
       .post("/api/articles/2/comments")
       .send(newComment)
-      .expect(404)
+      .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Invalid username");
+        expect(msg).toBe("Bad Request");
       });
   });
 
-  test("POST /api/articles/:article_id/comments responds with status code 404 article is not a valid article id from articles table", () => {
+  test("POST /api/articles/:article_id/comments responds with status code 400 article is not a valid article id from articles table", () => {
     const newComment = { username: "rogersop", body: "what a lovely story!!" };
     return request(app)
       .post("/api/articles/222/comments")
       .send(newComment)
-      .expect(404)
+      .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Invalid article_id");
+        expect(msg).toBe("Bad Request");
       });
   });
 
@@ -265,14 +265,14 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("POST /api/articles/:article_id/comments responds with psql error status code 404 if username is not passes in", () => {
+  test("POST /api/articles/:article_id/comments responds with psql error status code 400 if username is not passes in", () => {
     const newComment = { body: "what a lovely story!!" };
     return request(app)
       .post("/api/articles/2/comments")
       .send(newComment)
-      .expect(404)
+      .expect(400)
       .then(({ body: { msg } }) => {
-        expect(msg).toBe("Invalid username");
+        expect(msg).toBe("Bad Request");
       });
   });
 });

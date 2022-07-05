@@ -70,13 +70,6 @@ exports.fetchArticlesWithCommentCount = () => {
 exports.insertComment = (article_id, username, body, mybody) => {
   const validKeys = ["username", "body"];
 
-  // if (body === undefined) {
-  //   return Promise.reject({
-  //     status: 404,
-  //     msg: "Bad request",
-  //   });
-  // }
-
   for (let key in mybody) {
     if (!validKeys.includes(key)) {
       return Promise.reject({
@@ -87,27 +80,10 @@ exports.insertComment = (article_id, username, body, mybody) => {
   }
 
   return db
-    .query(`SELECT * FROM articles WHERE article_id =$1`, [article_id])
-    .then(({ rowCount }) => {
-      if (rowCount === 0) {
-        return Promise.reject({ status: 404, msg: "Invalid article_id" });
-      }
-    })
-    .then(() => {
-      return db
-        .query(`SELECT * FROM users WHERE username = $1`, [username])
-        .then(({ rowCount }) => {
-          if (rowCount === 0) {
-            return Promise.reject({ status: 404, msg: "Invalid username" });
-          }
-        });
-    })
-    .then(() => {
-      return db.query(
-        `INSERT INTO comments (author,body,article_id) VALUES ($1,$2,$3) RETURNING *`,
-        [username, body, article_id]
-      );
-    })
+    .query(
+      `INSERT INTO comments (author,body,article_id) VALUES ($1,$2,$3) RETURNING *`,
+      [username, body, article_id]
+    )
 
     .then(({ rows }) => {
       return rows[0];
