@@ -20,6 +20,7 @@ describe("GET /api/topics", () => {
       .then(({ body: { topics } }) => {
         expect(topics).toBeInstanceOf(Array);
         expect(topics).toHaveLength(3);
+
         topics.forEach((topic) => {
           expect(topic).toEqual(
             expect.objectContaining({
@@ -33,7 +34,7 @@ describe("GET /api/topics", () => {
 });
 
 describe("GET /api/articles/:article_id", () => {
-  test("Get /api/articles/:article_id endpoint should respond status 200 and an article objects, each having author,title,article_id,body,topic,created_at,votes property", () => {
+  test("Get /api/articles/:article_id endpoint should respond status 200 and an article objects, each having author,title,article_id,body,topic,created_at,votes,comment_count property", () => {
     return request(app)
       .get("/api/articles/1")
       .expect(200)
@@ -46,6 +47,7 @@ describe("GET /api/articles/:article_id", () => {
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
+          comment_count: "11",
         });
       });
   });
@@ -65,6 +67,27 @@ describe("GET /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/users", () => {
+  test("GET /api/users endpoints responds with status 200 and an array of object, each with property username,name,avatar_url", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body: { users } }) => {
+        expect(users).toBeInstanceOf(Array);
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            })
+          );
+        });
       });
   });
 });
@@ -134,6 +157,33 @@ describe("Patch /api/articles/:article_id", () => {
   });
 });
 
+
+describe("GET /api/articles", () => {
+  test("Get /api/articles endpoint should respond with status 200 and a array of articles objects, each having author, title, article_id, topic, created_at, votes and comment_count properties", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(5);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              body: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
+      });
+  });
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("GET /api/articles/:article_id/comments endpoint responds with status 200 and an array of comments for the given article_id of which each comment should have the following properties: comment_id,votes, created_at,author,body", () => {
     return request(app)
@@ -151,11 +201,8 @@ describe("GET /api/articles/:article_id/comments", () => {
               created_at: expect.any(String),
               author: expect.any(String),
               body: expect.any(String),
-            })
-          );
-        });
-      });
-  });
+              })
+)})})})             
 
   test("GET /api/articles/:article_id/comments endpoint responds with status 404 and msg NOT Found, article_id doesnot exist", () => {
     return request(app)

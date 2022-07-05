@@ -6,8 +6,10 @@ app.use(express.json());
 const {
   getTopics,
   getArticlesByArticleId,
+  getUsers,
   patchArticleByArticleId,
   getCommentsByArticleId,
+  getArticles,
 } = require("./controller/app.controller");
 
 const {
@@ -19,9 +21,15 @@ const {
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticlesByArticleId);
+
 app.patch("/api/articles/:article_id", patchArticleByArticleId);
 
 app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
+app.get("/api/articles", getArticles);
+
+app.get("/api/users", getUsers);
+
+
 //error handlers
 app.use(psqlErrorHandler);
 app.use(handleCustomErrors);
