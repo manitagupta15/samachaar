@@ -12,8 +12,8 @@ afterAll(() => {
   db.end();
 });
 
-describe("test", () => {
-  test("invalid path", () => {
+describe("testing for invalid paths", () => {
+  test("invalid path reponds with status 404 and message invalid path", () => {
     return request(app)
       .get("/any")
       .expect(404)
@@ -213,6 +213,11 @@ describe("POST /api/articles/:article_id/comments", () => {
             created_at: expect.any(String),
           })
         );
+        expect(comment.comment_id).toBe(19);
+        expect(comment.author).toBe("rogersop");
+        expect(comment.body).toBe("what a lovely story!!");
+        expect(comment.votes).toBe(0);
+        expect(comment.article_id).toBe(2);
       });
   });
 
@@ -235,6 +240,39 @@ describe("POST /api/articles/:article_id/comments", () => {
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Invalid article_id");
+      });
+  });
+
+  test("POST /api/articles/:article_id/comments responds with psql error status code 400 if article_id is not a number", () => {
+    const newComment = { username: "rogersop", body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/a/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("POST /api/articles/:article_id/comments responds with psql error status code 400 if body is not passes in", () => {
+    const newComment = { username: "rogersop" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("POST /api/articles/:article_id/comments responds with psql error status code 404 if username is not passes in", () => {
+    const newComment = { body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid username");
       });
   });
 });

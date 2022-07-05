@@ -70,6 +70,13 @@ exports.fetchArticlesWithCommentCount = () => {
 exports.insertComment = (article_id, username, body, mybody) => {
   const validKeys = ["username", "body"];
 
+  // if (body === undefined) {
+  //   return Promise.reject({
+  //     status: 404,
+  //     msg: "Bad request",
+  //   });
+  // }
+
   for (let key in mybody) {
     if (!validKeys.includes(key)) {
       return Promise.reject({
