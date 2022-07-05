@@ -157,7 +157,7 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 
-  test("GET /api/articles/:article_id/comments endpoint responds with status 400 and msg Not found, if article_id is not present", () => {
+  test("GET /api/articles/:article_id/comments endpoint responds with status 404 and msg NOT Found, article_id doesnot exist", () => {
     return request(app)
       .get("/api/articles/100/comments")
       .expect(404)
@@ -172,6 +172,16 @@ describe("GET /api/articles/:article_id/comments", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("GET /api/articles/:article_id/comments endpoint responds with status 200 and an array of length 0 where there are no comments for the given article_id", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
       });
   });
 });
