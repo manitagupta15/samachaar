@@ -41,6 +41,11 @@ exports.fetchArticlesWithCommentCount = () => {
   GROUP BY articles.article_id ORDER BY articles.article_id DESC`
     )
     .then(({ rows }) => {
-      return rows;
+      const articlesWithFormattedCount = rows.map((article) => {
+        const articleCopy = { ...article };
+        articleCopy.comment_count = +article.comment_count;
+        return articleCopy;
+      });
+      return articlesWithFormattedCount;
     });
 };
