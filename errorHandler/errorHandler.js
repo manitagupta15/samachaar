@@ -1,5 +1,8 @@
+exports.invalidPathError = (req, res) => {
+  res.status(404).send({ msg: "Invalid Path!" });
+};
+
 exports.psqlErrorHandler = (err, req, res, next) => {
-  // console.log(err);
   if (err?.code) {
     res.status(400).send({ msg: "Bad Request" });
   } else next(err);

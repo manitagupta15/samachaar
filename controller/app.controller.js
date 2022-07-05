@@ -4,6 +4,7 @@ const {
   fetchUsers,
   patchArticle,
   fetchArticlesWithCommentCount,
+  insertComment,
 } = require("../model/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -56,4 +57,14 @@ exports.getArticles = (req, res, next) => {
     .catch((err) => {
       next(err);
     });
+};
+
+exports.postComment = (req, res, next) => {
+  const { article_id } = req.params;
+  const { username, body } = req.body;
+  const mybody = req.body;
+
+  insertComment(article_id, username, body, mybody).then((comment) => {
+    res.status(201).send({ comment });
+  });
 };

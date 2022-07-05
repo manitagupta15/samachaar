@@ -9,12 +9,14 @@ const {
   getUsers,
   patchArticleByArticleId,
   getArticles,
+  postComment,
 } = require("./controller/app.controller");
 
 const {
   psqlErrorHandler,
   handleCustomErrors,
   unhandledErrors,
+  invalidPathError,
 } = require("./errorHandler/errorHandler");
 
 app.get("/api/topics", getTopics);
@@ -27,7 +29,9 @@ app.get("/api/articles", getArticles);
 
 app.get("/api/users", getUsers);
 
-// app.patch("/api/articles/:article_id", patchArticleByArticleId);
+app.post("/api/articles/:article_id/comments", postComment);
+
+app.all("/*", invalidPathError);
 
 //error handlers
 app.use(psqlErrorHandler);

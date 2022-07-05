@@ -12,6 +12,17 @@ afterAll(() => {
   db.end();
 });
 
+describe("test", () => {
+  test("invalid path", () => {
+    return request(app)
+      .get("/any")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid Path!");
+      });
+  });
+});
+
 describe("GET /api/topics", () => {
   test("Get /api/topics endpoint should respond with status 200 and a array of topic objects, each having slug and description properties", () => {
     return request(app)
@@ -180,6 +191,28 @@ describe("GET /api/articles", () => {
             })
           );
         });
+      });
+  });
+});
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST /api/articles/:article_id/comments responds with status code 201 and add a new comment in in the comments table with the given username and body", () => {
+    const newComment = { username: "rogersop", body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: expect.any(String),
+            votes: expect.any(Number),
+            author: expect.any(String),
+            article_id: expect.any(Number),
+            created_at: expect.any(String),
+          })
+        );
       });
   });
 });

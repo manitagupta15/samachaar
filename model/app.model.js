@@ -66,3 +66,25 @@ exports.fetchArticlesWithCommentCount = () => {
       return articlesWithFormattedCount;
     });
 };
+
+exports.insertComment = (article_id, username, body, mybody) => {
+  const validKeys = ["username", "body"];
+
+  for (let key in mybody) {
+    if (!validKeys.includes(key)) {
+      return Promise.reject({
+        status: 404,
+        msg: "Bad request",
+      });
+    }
+  }
+
+  return db
+    .query(
+      `INSERT INTO comments (author,body,article_id) VALUES ($1,$2,$3) RETURNING *`,
+      [username, body, article_id]
+    )
+    .then(({ rows }) => {
+      return rows[0];
+    });
+};
