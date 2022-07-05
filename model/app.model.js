@@ -31,6 +31,10 @@ exports.fetchArticles = (article_id) => {
     });
 };
 
+exports.fetchUsers = () => {
+  return db.query(`SELECT * FROM users`).then(({ rows }) => {
+    return rows;
+  });
 exports.patchArticle = (article_id, inc_votes) => {
   const validKey = [inc_votes];
 
