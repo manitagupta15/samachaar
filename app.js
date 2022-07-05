@@ -7,6 +7,7 @@ const {
   getTopics,
   getArticlesByArticleId,
   patchArticleByArticleId,
+  getCommentsByArticleId,
 } = require("./controller/app.controller");
 
 const {
@@ -19,6 +20,8 @@ app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticlesByArticleId);
 app.patch("/api/articles/:article_id", patchArticleByArticleId);
+
+app.get("/api/articles/:article_id/comments", getCommentsByArticleId);
 //error handlers
 app.use(psqlErrorHandler);
 app.use(handleCustomErrors);

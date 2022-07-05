@@ -142,13 +142,36 @@ describe("GET /api/articles/:article_id/comments", () => {
       .then(({ body: { comments } }) => {
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(11);
+
         comments.forEach((comment) => {
-          expect(comment).toHaveProperty("comment_id");
-          expect(comment).toHaveProperty("votes");
-          expect(comment).toHaveProperty("created_at");
-          expect(comment).toHaveProperty("author");
-          expect(comment).toHaveProperty("body");
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+            })
+          );
         });
+      });
+  });
+
+  test("GET /api/articles/:article_id/comments endpoint responds with status 400 and msg Not found, if article_id is not present", () => {
+    return request(app)
+      .get("/api/articles/100/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("NOT Found, article_id doesnot exist");
+      });
+  });
+
+  test("GET /api/articles/:article_id/comments endpoint responds with psql error, status 400 and msg Not found, if article_id is of wrong data type", () => {
+    return request(app)
+      .get("/api/articles/a/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
       });
   });
 });
