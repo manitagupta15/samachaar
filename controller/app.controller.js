@@ -1,6 +1,7 @@
 const {
   fetchTopics,
   fetchArticles,
+  fetchUsers,
   patchArticle,
   fetchArticlesWithCommentCount,
 } = require("../model/app.model");
@@ -27,6 +28,10 @@ exports.getArticlesByArticleId = (req, res, next) => {
     });
 };
 
+exports.getUsers = (req, res, next) => {
+  fetchUsers()
+    .then((users) => {
+      res.status(200).send({ users });
 exports.patchArticleByArticleId = (req, res, next) => {
   const { article_id } = req.params;
   const { inc_votes } = req.body;
