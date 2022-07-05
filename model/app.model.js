@@ -27,7 +27,6 @@ exports.fetchArticles = (article_id) => {
         });
       }
 
-      console.log(rows[0], "<----");
       return rows[0];
     });
 };
