@@ -53,16 +53,17 @@ exports.getCommentsByArticleId = (req, res, next) => {
 
   fetchCommentsByArticleId(article_id)
     .then((comments) => {
-      res.status(200).send({ comments })
-       })
+      res.status(200).send({ comments });
+    })
     .catch((err) => {
       next(err);
     });
-      }
-      
-      
+};
+
 exports.getArticles = (req, res, next) => {
-  fetchArticlesWithCommentCount()
+  const mybody = req.body;
+
+  fetchArticlesWithCommentCount(mybody)
     .then((articles) => {
       //  console.log(articles);
       res.status(200).send({ articles });

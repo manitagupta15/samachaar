@@ -72,11 +72,10 @@ exports.fetchCommentsByArticleId = (article_id) => {
 
     .then(({ rows }) => {
       return rows;
+    });
+};
 
-})
-}
-
-exports.fetchArticlesWithCommentCount = () => {
+exports.fetchArticlesWithCommentCount = (mybody) => {
   return db
     .query(
       `SELECT articles.*, COUNT(comments.article_id) as comment_count FROM articles
