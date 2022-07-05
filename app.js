@@ -27,7 +27,7 @@ app.get("/api/articles", getArticles);
 
 app.get("/api/users", getUsers);
 
-app.patch("/api/articles/:article_id", patchArticleByArticleId);
+// app.patch("/api/articles/:article_id", patchArticleByArticleId);
 
 //error handlers
 app.use(psqlErrorHandler);

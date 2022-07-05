@@ -71,7 +71,6 @@ describe("GET /api/articles/:article_id", () => {
   });
 });
 
-
 describe("GET /api/users", () => {
   test("GET /api/users endpoints responds with status 200 and an array of object, each with property username,name,avatar_url", () => {
     return request(app)
@@ -91,6 +90,7 @@ describe("GET /api/users", () => {
         });
       });
   });
+});
 
 describe("Patch /api/articles/:article_id", () => {
   test("patch /api/articles/:article_id, responds with a status code 200 and updates the votes property with given value", () => {
