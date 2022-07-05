@@ -133,3 +133,22 @@ describe("Patch /api/articles/:article_id", () => {
       });
   });
 });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("GET /api/articles/:article_id/comments endpoint responds with status 200 and an array of comments for the given article_id of which each comment should have the following properties: comment_id,votes, created_at,author,body", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(11);
+        comments.forEach((comment) => {
+          expect(comment).toHaveProperty("comment_id");
+          expect(comment).toHaveProperty("votes");
+          expect(comment).toHaveProperty("created_at");
+          expect(comment).toHaveProperty("author");
+          expect(comment).toHaveProperty("body");
+        });
+      });
+  });
+});
