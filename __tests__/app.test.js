@@ -226,4 +226,15 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(msg).toBe("Invalid username");
       });
   });
+
+  test("POST /api/articles/:article_id/comments responds with status code 404 article is not a valid article id from articles table", () => {
+    const newComment = { username: "rogersop", body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/222/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid article_id");
+      });
+  });
 });
