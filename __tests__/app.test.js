@@ -176,6 +176,11 @@ describe("GET /api/articles", () => {
       .then(({ body: { articles } }) => {
         expect(articles).toBeInstanceOf(Array);
         expect(articles).toHaveLength(5);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+          coerce: true,
+        });
+
         articles.forEach((article) => {
           expect(article).toEqual(
             expect.objectContaining({
@@ -332,6 +337,57 @@ describe("GET /api/articles (queries)", () => {
       .then(({ body: { articles } }) => {
         expect(articles).toBeSortedBy("article_id", {
           descending: true,
+          coerce: false,
+        });
+      });
+  });
+
+  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid query key is not passed(sort_by,order,topic)", () => {
+    return request(app)
+      .get("/api/articles?inValidQueryKey=article_id")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid query.. sorry!!!");
+      });
+  });
+
+  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
+    return request(app)
+      .get("/api/articles?sort_by=Hello")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid sort_by query.. sorry!!!");
+      });
+  });
+
+  test("GET /api/articles (queries) Order, which orders the articles ASC or DESC by any valid column (defaults to date)", () => {
+    return request(app)
+      .get("/api/articles?order=ASC")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", {
+          descending: false,
+          coerce: true,
+        });
+      });
+  });
+
+  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
+    return request(app)
+      .get("/api/articles?order=Hello")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid order query.. sorry!!!");
+      });
+  });
+
+  test("GET /api/articles (queries) when both order and sort_by queries are done, sorts the articles by any valid column (defaults to date)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&order=ASC")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("article_id", {
+          descending: false,
           coerce: false,
         });
       });

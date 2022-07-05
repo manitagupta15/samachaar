@@ -65,8 +65,12 @@ exports.getCommentsByArticleId = (req, res, next) => {
     });
 };
 
+//changes made for incorporate task 11
 exports.getArticles = (req, res, next) => {
-  fetchArticlesWithCommentCount()
+  const reqQuery = req.query;
+  const { sort_by, order, topic } = req.query;
+
+  fetchArticlesWithCommentCount(sort_by, order, topic, reqQuery)
     .then((articles) => {
       res.status(200).send({ articles });
     })
