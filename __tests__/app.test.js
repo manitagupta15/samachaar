@@ -248,7 +248,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(msg).toBe("Bad Request");
       });
   });
-  
+
   test("POST /api/articles/:article_id/comments responds with psql error status code 400 if body is not passes in", () => {
     const newComment = { username: "rogersop" };
     return request(app)
@@ -271,7 +271,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
-
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("GET /api/articles/:article_id/comments endpoint responds with status 200 and an array of comments for the given article_id of which each comment should have the following properties: comment_id,votes, created_at,author,body", () => {
@@ -325,4 +324,16 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-
+describe("GET /api/articles (queries)", () => {
+  test("GET /api/articles (queries) sort_by, which sorts the articles by any valid column (defaults to date)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("article_id", {
+          descending: true,
+          coerce: false,
+        });
+      });
+  });
+});
