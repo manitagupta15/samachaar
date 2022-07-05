@@ -3,6 +3,7 @@ const {
   fetchArticles,
   fetchUsers,
   patchArticle,
+  fetchArticlesWithCommentCount,
 } = require("../model/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -38,6 +39,17 @@ exports.patchArticleByArticleId = (req, res, next) => {
   patchArticle(article_id, inc_votes)
     .then((article) => {
       res.status(200).send({ article });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getArticles = (req, res, next) => {
+  fetchArticlesWithCommentCount()
+    .then((articles) => {
+      //  console.log(articles);
+      res.status(200).send({ articles });
     })
     .catch((err) => {
       next(err);

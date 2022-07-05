@@ -20,6 +20,7 @@ describe("GET /api/topics", () => {
       .then(({ body: { topics } }) => {
         expect(topics).toBeInstanceOf(Array);
         expect(topics).toHaveLength(3);
+
         topics.forEach((topic) => {
           expect(topic).toEqual(
             expect.objectContaining({
@@ -152,6 +153,33 @@ describe("Patch /api/articles/:article_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe("GET /api/articles", () => {
+  test("Get /api/articles endpoint should respond with status 200 and a array of articles objects, each having author, title, article_id, topic, created_at, votes and comment_count properties", () => {
+    return request(app)
+      .get("/api/articles")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(5);
+        articles.forEach((article) => {
+          expect(article).toEqual(
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+
+              article_id: expect.any(Number),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              body: expect.any(String),
+              comment_count: expect.any(Number),
+            })
+          );
+        });
       });
   });
 });
