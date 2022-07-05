@@ -12,6 +12,17 @@ afterAll(() => {
   db.end();
 });
 
+describe("testing for invalid paths", () => {
+  test("invalid path reponds with status 404 and message invalid path", () => {
+    return request(app)
+      .get("/any")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid Path!");
+      });
+  });
+});
+
 describe("GET /api/topics", () => {
   test("Get /api/topics endpoint should respond with status 200 and a array of topic objects, each having slug and description properties", () => {
     return request(app)
@@ -184,6 +195,84 @@ describe("GET /api/articles", () => {
   });
 });
 
+describe("POST /api/articles/:article_id/comments", () => {
+  test("POST /api/articles/:article_id/comments responds with status code 201 and add a new comment in in the comments table with the given username and body", () => {
+    const newComment = { username: "rogersop", body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(201)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual(
+          expect.objectContaining({
+            comment_id: expect.any(Number),
+            body: "what a lovely story!!",
+            votes: 0,
+            author: "rogersop",
+            article_id: 2,
+            created_at: expect.any(String),
+          })
+        );
+      });
+  });
+
+  test("POST /api/articles/:article_id/comments responds with status code 400 username is not a valid username in users table", () => {
+    const newComment = { username: "Hello", body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("POST /api/articles/:article_id/comments responds with status code 400 article is not a valid article id from articles table", () => {
+    const newComment = { username: "rogersop", body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/222/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("POST /api/articles/:article_id/comments responds with psql error status code 400 if article_id is not a number", () => {
+    const newComment = { username: "rogersop", body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/a/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+  
+  test("POST /api/articles/:article_id/comments responds with psql error status code 400 if body is not passes in", () => {
+    const newComment = { username: "rogersop" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("POST /api/articles/:article_id/comments responds with psql error status code 400 if username is not passes in", () => {
+    const newComment = { body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+
 describe("GET /api/articles/:article_id/comments", () => {
   test("GET /api/articles/:article_id/comments endpoint responds with status 200 and an array of comments for the given article_id of which each comment should have the following properties: comment_id,votes, created_at,author,body", () => {
     return request(app)
@@ -235,4 +324,5 @@ describe("GET /api/articles/:article_id/comments", () => {
       });
   });
 });
+
 
