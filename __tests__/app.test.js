@@ -206,18 +206,13 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(comment).toEqual(
           expect.objectContaining({
             comment_id: expect.any(Number),
-            body: expect.any(String),
-            votes: expect.any(Number),
-            author: expect.any(String),
-            article_id: expect.any(Number),
+            body: "what a lovely story!!",
+            votes: 0,
+            author: "rogersop",
+            article_id: 2,
             created_at: expect.any(String),
           })
         );
-        expect(comment.comment_id).toBe(19);
-        expect(comment.author).toBe("rogersop");
-        expect(comment.body).toBe("what a lovely story!!");
-        expect(comment.votes).toBe(0);
-        expect(comment.article_id).toBe(2);
       });
   });
 
