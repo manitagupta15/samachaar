@@ -50,6 +50,32 @@ exports.patchArticle = (article_id, inc_votes) => {
     });
 };
 
+exports.fetchCommentsByArticleId = (article_id) => {
+  return db
+    .query(`SELECT * FROM articles WHERE article_id = $1`, [article_id])
+    .then(({ rowCount }) => {
+      if (rowCount === 0) {
+        return Promise.reject({
+          status: 404,
+          msg: "NOT Found, article_id doesnot exist",
+        });
+      }
+    })
+    .then(() => {
+      return db.query(
+        `SELECT * FROM comments 
+      JOIN articles ON articles.article_id = comments.article_id 
+      WHERE comments.article_id =$1`,
+        [article_id]
+      );
+    })
+
+    .then(({ rows }) => {
+      return rows;
+
+})
+}
+
 exports.fetchArticlesWithCommentCount = () => {
   return db
     .query(

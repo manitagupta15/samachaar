@@ -157,6 +157,7 @@ describe("Patch /api/articles/:article_id", () => {
   });
 });
 
+
 describe("GET /api/articles", () => {
   test("Get /api/articles endpoint should respond with status 200 and a array of articles objects, each having author, title, article_id, topic, created_at, votes and comment_count properties", () => {
     return request(app)
@@ -180,6 +181,54 @@ describe("GET /api/articles", () => {
             })
           );
         });
+      });
+  });
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("GET /api/articles/:article_id/comments endpoint responds with status 200 and an array of comments for the given article_id of which each comment should have the following properties: comment_id,votes, created_at,author,body", () => {
+    return request(app)
+      .get("/api/articles/1/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(11);
+
+        comments.forEach((comment) => {
+          expect(comment).toEqual(
+            expect.objectContaining({
+              comment_id: expect.any(Number),
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              })
+)})})})             
+
+  test("GET /api/articles/:article_id/comments endpoint responds with status 404 and msg NOT Found, article_id doesnot exist", () => {
+    return request(app)
+      .get("/api/articles/100/comments")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("NOT Found, article_id doesnot exist");
+      });
+  });
+
+  test("GET /api/articles/:article_id/comments endpoint responds with psql error, status 400 and msg Not found, if article_id is of wrong data type", () => {
+    return request(app)
+      .get("/api/articles/a/comments")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("GET /api/articles/:article_id/comments endpoint responds with status 200 and an array of length 0 where there are no comments for the given article_id", () => {
+    return request(app)
+      .get("/api/articles/4/comments")
+      .expect(200)
+      .then(({ body: { comments } }) => {
+        expect(comments).toBeInstanceOf(Array);
+        expect(comments).toHaveLength(0);
       });
   });
 });
