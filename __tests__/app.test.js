@@ -215,4 +215,15 @@ describe("POST /api/articles/:article_id/comments", () => {
         );
       });
   });
+
+  test("POST /api/articles/:article_id/comments responds with status code 404 username is not a valid username in users table", () => {
+    const newComment = { username: "Hello", body: "what a lovely story!!" };
+    return request(app)
+      .post("/api/articles/2/comments")
+      .send(newComment)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid username");
+      });
+  });
 });

@@ -80,10 +80,19 @@ exports.insertComment = (article_id, username, body, mybody) => {
   }
 
   return db
-    .query(
-      `INSERT INTO comments (author,body,article_id) VALUES ($1,$2,$3) RETURNING *`,
-      [username, body, article_id]
-    )
+    .query(`SELECT * FROM users WHERE username = $1`, [username])
+    .then(({ rowCount }) => {
+      if (rowCount === 0) {
+        return Promise.reject({ status: 404, msg: "Invalid username" });
+      }
+    })
+    .then(() => {
+      return db.query(
+        `INSERT INTO comments (author,body,article_id) VALUES ($1,$2,$3) RETURNING *`,
+        [username, body, article_id]
+      );
+    })
+
     .then(({ rows }) => {
       return rows[0];
     });

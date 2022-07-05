@@ -51,7 +51,6 @@ exports.patchArticleByArticleId = (req, res, next) => {
 exports.getArticles = (req, res, next) => {
   fetchArticlesWithCommentCount()
     .then((articles) => {
-      //  console.log(articles);
       res.status(200).send({ articles });
     })
     .catch((err) => {
@@ -64,7 +63,11 @@ exports.postComment = (req, res, next) => {
   const { username, body } = req.body;
   const mybody = req.body;
 
-  insertComment(article_id, username, body, mybody).then((comment) => {
-    res.status(201).send({ comment });
-  });
+  insertComment(article_id, username, body, mybody)
+    .then((comment) => {
+      res.status(201).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
 };
