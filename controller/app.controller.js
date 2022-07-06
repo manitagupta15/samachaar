@@ -88,3 +88,14 @@ exports.postComment = (req, res, next) => {
       next(err);
     });
 };
+
+exports.deleteCommentByCommentId = (req, res, next) => {
+  const { comment_id } = req.params;
+  deleteComment(comment_id)
+    .then(() => {
+      res.status(204).send({ msg: "deleted comment" });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};

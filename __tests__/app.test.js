@@ -248,7 +248,7 @@ describe("POST /api/articles/:article_id/comments", () => {
         expect(msg).toBe("Bad Request");
       });
   });
-  
+
   test("POST /api/articles/:article_id/comments responds with psql error status code 400 if body is not passes in", () => {
     const newComment = { username: "rogersop" };
     return request(app)
@@ -271,7 +271,6 @@ describe("POST /api/articles/:article_id/comments", () => {
       });
   });
 });
-
 
 describe("GET /api/articles/:article_id/comments", () => {
   test("GET /api/articles/:article_id/comments endpoint responds with status 200 and an array of comments for the given article_id of which each comment should have the following properties: comment_id,votes, created_at,author,body", () => {
@@ -325,4 +324,13 @@ describe("GET /api/articles/:article_id/comments", () => {
   });
 });
 
-
+describe("DELETE /api/comments/:comment_id", () => {
+  test(
+    "DELETE /api/comments/:comment_id, deletes the comment with given comment Id",()=>{
+        return request(app).delete("/api/comments/1").expect(204)
+        // .then(({body:{msg}})=>{
+        //     expect(msg).toBe("deleted comment")
+        })
+    }
+  );
+});
