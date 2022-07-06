@@ -1,5 +1,8 @@
 const db = require("../db/connection");
 const format = require("pg-format");
+const fs = require("fs/promises");
+const jsonfile = require("../endpoints.json");
+const { dirname } = require("path");
 
 exports.fetchTopics = () => {
   return db.query(`SELECT * FROM topics;`).then(({ rows }) => {
@@ -163,5 +166,13 @@ exports.insertComment = (article_id, username, body, mybody) => {
 
     .then(({ rows }) => {
       return rows[0];
+    });
+};
+
+exports.getData = () => {
+  return fs
+    .readFile(`${__dirname}/../endpoints.json`, "utf-8")
+    .then((getData) => {
+      return JSON.parse(getData);
     });
 };

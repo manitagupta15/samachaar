@@ -1,3 +1,5 @@
+const { jsonFile } = require("../endpoints.json");
+
 const {
   fetchTopics,
   fetchArticles,
@@ -6,6 +8,7 @@ const {
   fetchCommentsByArticleId,
   fetchArticlesWithCommentCount,
   insertComment,
+  getData,
 } = require("../model/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -94,5 +97,12 @@ exports.postComment = (req, res, next) => {
 };
 
 exports.getAllapi = (req, res, next) => {
-  
+  getData()
+    .then((data) => {
+      res.status(200).send({ data });
+    })
+
+    .catch((err) => {
+      next(err);
+    });
 };

@@ -201,7 +201,7 @@ describe("GET /api/articles", () => {
 });
 
 describe("POST /api/articles/:article_id/comments", () => {
-  test("POST /api/articles/:article_id/comments responds with status code 201 and add a new comment in in the comments table with the given username and body", () => {
+  test("POST /api/articles/:article_id/comments responds with status code 201 and add a new comment in the comments table with the given username and body", () => {
     const newComment = { username: "rogersop", body: "what a lovely story!!" };
     return request(app)
       .post("/api/articles/2/comments")
@@ -516,6 +516,17 @@ describe("GET /api/articles (queries)", () => {
             votes: 0,
           },
         ]);
+      });
+  });
+});
+
+describe("Get /api", () => {
+  test("Get /api responds with json object with all the endpoints", () => {
+    return request(app)
+      .get("/api")
+      .expect(200)
+      .then(({ body: { data } }) => {
+        expect(typeof data).toBe("object");
       });
   });
 });
