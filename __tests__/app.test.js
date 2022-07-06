@@ -176,6 +176,11 @@ describe("GET /api/articles", () => {
       .then(({ body: { articles } }) => {
         expect(articles).toBeInstanceOf(Array);
         expect(articles).toHaveLength(5);
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+          coerce: true,
+        });
+
         articles.forEach((article) => {
           expect(article).toEqual(
             expect.objectContaining({
@@ -344,6 +349,195 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Invalid Comment_id");
+       })})
+
+describe("GET /api/articles (queries)", () => {
+  test("GET /api/articles (queries) sort_by, which sorts the articles by any valid column (defaults to date)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("article_id", {
+          descending: true,
+          coerce: false,
+        });
+      });
+  });
+
+  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid query key is not passed(sort_by,order,topic)", () => {
+    return request(app)
+      .get("/api/articles?inValidQueryKey=article_id")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid query.. sorry!!!");
+      });
+  });
+
+  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
+    return request(app)
+      .get("/api/articles?sort_by=Hello")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid sort_by query.. sorry!!!");
+      });
+  });
+
+  test("GET /api/articles (queries) Order, which orders the articles ASC or DESC by any valid column (defaults to date)", () => {
+    return request(app)
+      .get("/api/articles?order=ASC")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("created_at", {
+          descending: false,
+          coerce: true,
+        });
+      });
+  });
+
+  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
+    return request(app)
+      .get("/api/articles?order=Hello")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid order query.. sorry!!!");
+      });
+  });
+
+  test("GET /api/articles (queries) when both order and sort_by queries are done, sorts the articles by any valid column (defaults to date)", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&order=ASC")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeSortedBy("article_id", {
+          descending: false,
+          coerce: false,
+        });
+      });
+  });
+
+  test("GET /api/articles (queries) Topic, which responds with status 200 and array of articles with given topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(4);
+
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+          coerce: false,
+        });
+
+        expect(articles).toEqual([
+          {
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: 0,
+            comment_count: 2,
+          },
+          {
+            article_id: 6,
+            title: "A",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "Delicious tin of cat food",
+            created_at: "2020-10-18T01:00:00.000Z",
+            votes: 0,
+            comment_count: 1,
+          },
+          {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+            comment_count: 11,
+          },
+          {
+            article_id: 9,
+            title: "They're not exactly dogs, are they?",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "Well? Think about it.",
+            created_at: "2020-06-06T09:10:00.000Z",
+            votes: 0,
+            comment_count: 2,
+          },
+        ]);
+      });
+  });
+
+  test("GET /api/articles (queries) Topic, which responds with status 200 and array of empty articles with given topic doesnot exist", () => {
+    return request(app)
+      .get("/api/articles?topic=Hello")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(0);
+      });
+  });
+
+  test("GET /api/articles (queries) Topic,sortby,order, which responds with status 200 and array of articles when given topic, sortby and order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&topic=mitch&order=ASC")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(4);
+
+        expect(articles).toBeSortedBy("article_id", {
+          descending: false,
+          coerce: false,
+        });
+
+        expect(articles).toEqual([
+          {
+            article_id: 1,
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            comment_count: 11,
+            created_at: "2020-07-09T20:11:00.000Z",
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            votes: 100,
+          },
+          {
+            article_id: 3,
+            author: "icellusedkars",
+            body: "some gifs",
+            comment_count: 2,
+            created_at: "2020-11-03T09:12:00.000Z",
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            votes: 0,
+          },
+          {
+            article_id: 6,
+            author: "icellusedkars",
+            body: "Delicious tin of cat food",
+            comment_count: 1,
+            created_at: "2020-10-18T01:00:00.000Z",
+            title: "A",
+            topic: "mitch",
+            votes: 0,
+          },
+          {
+            article_id: 9,
+            author: "butter_bridge",
+            body: "Well? Think about it.",
+            comment_count: 2,
+            created_at: "2020-06-06T09:10:00.000Z",
+            title: "They're not exactly dogs, are they?",
+            topic: "mitch",
+            votes: 0,
+          },
+        ]);
       });
   });
 });
