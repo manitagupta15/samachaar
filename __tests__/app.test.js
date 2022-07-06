@@ -349,8 +349,9 @@ describe("DELETE /api/comments/:comment_id", () => {
       .expect(404)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Invalid Comment_id");
-       })})
-
+      });
+  });
+});
 describe("GET /api/articles (queries)", () => {
   test("GET /api/articles (queries) sort_by, which sorts the articles by any valid column (defaults to date)", () => {
     return request(app)
