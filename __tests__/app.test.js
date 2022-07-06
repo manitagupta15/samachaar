@@ -337,4 +337,13 @@ describe("DELETE /api/comments/:comment_id", () => {
         expect(msg).toBe("Bad Request");
       });
   });
+
+  test("DELETE /api/comments/:comment_id, responds with error status 404 and msg Not Found when given comment Id is not presend", () => {
+    return request(app)
+      .delete("/api/comments/1000")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid Comment_id");
+      });
+  });
 });
