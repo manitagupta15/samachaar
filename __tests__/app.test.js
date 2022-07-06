@@ -392,4 +392,72 @@ describe("GET /api/articles (queries)", () => {
         });
       });
   });
+
+  test("GET /api/articles (queries) Topic, which responds with status 200 and array of articles with given topic", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(4);
+
+        expect(articles).toBeSortedBy("created_at", {
+          descending: true,
+          coerce: false,
+        });
+
+        expect(articles).toEqual([
+          {
+            article_id: 3,
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "some gifs",
+            created_at: "2020-11-03T09:12:00.000Z",
+            votes: 0,
+            comment_count: 2,
+          },
+          {
+            article_id: 6,
+            title: "A",
+            topic: "mitch",
+            author: "icellusedkars",
+            body: "Delicious tin of cat food",
+            created_at: "2020-10-18T01:00:00.000Z",
+            votes: 0,
+            comment_count: 1,
+          },
+          {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+            comment_count: 11,
+          },
+          {
+            article_id: 9,
+            title: "They're not exactly dogs, are they?",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "Well? Think about it.",
+            created_at: "2020-06-06T09:10:00.000Z",
+            votes: 0,
+            comment_count: 2,
+          },
+        ]);
+      });
+  });
+
+  test("GET /api/articles (queries) Topic, which responds with status 200 and array of empty articles with given topic doesnot exist", () => {
+    return request(app)
+      .get("/api/articles?topic=Hello")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(0);
+      });
+  });
 });

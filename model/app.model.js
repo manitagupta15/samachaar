@@ -94,6 +94,7 @@ exports.fetchArticlesWithCommentCount = (
       }
     }
   }
+
   const validSortOptionsSort = [
     "article_id",
     "title",
@@ -122,6 +123,15 @@ exports.fetchArticlesWithCommentCount = (
   let queryString = `SELECT articles.*, COUNT(comments.article_id) as comment_count FROM articles
   JOIN comments ON articles.article_id = comments.article_id
   GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
+
+  if (topic !== undefined) {
+    queryString = format(
+      `SELECT articles.*, COUNT(comments.article_id) as comment_count FROM articles
+  JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic LIKE '${topic}'
+  GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`,
+      [topic]
+    );
+  }
 
   return db.query(queryString).then(({ rows }) => {
     const articlesWithFormattedCount = rows.map((article) => {
