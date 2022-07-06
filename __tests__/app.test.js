@@ -4,6 +4,8 @@ const seed = require("../db/seeds/seed");
 const db = require("../db/connection");
 const testData = require("../db/data/test-data/index");
 
+const jsonFile = require("../endpoints.json");
+
 beforeEach(() => {
   return seed(testData);
 });
@@ -527,6 +529,7 @@ describe("Get /api", () => {
       .expect(200)
       .then(({ body: { data } }) => {
         expect(typeof data).toBe("object");
+        expect(data).toEqual(jsonFile);
       });
   });
 });

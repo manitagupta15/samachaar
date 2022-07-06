@@ -97,12 +97,7 @@ exports.postComment = (req, res, next) => {
 };
 
 exports.getAllapi = (req, res, next) => {
-  getData()
-    .then((data) => {
-      res.status(200).send({ data });
-    })
+  const data = getData();
 
-    .catch((err) => {
-      next(err);
-    });
+  res.status(200).send({ data });
 };

@@ -170,9 +170,5 @@ exports.insertComment = (article_id, username, body, mybody) => {
 };
 
 exports.getData = () => {
-  return fs
-    .readFile(`${__dirname}/../endpoints.json`, "utf-8")
-    .then((getData) => {
-      return JSON.parse(getData);
-    });
+  return jsonfile;
 };
