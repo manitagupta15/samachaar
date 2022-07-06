@@ -325,12 +325,16 @@ describe("GET /api/articles/:article_id/comments", () => {
 });
 
 describe("DELETE /api/comments/:comment_id", () => {
-  test(
-    "DELETE /api/comments/:comment_id, deletes the comment with given comment Id",()=>{
-        return request(app).delete("/api/comments/1").expect(204)
-        // .then(({body:{msg}})=>{
-        //     expect(msg).toBe("deleted comment")
-        })
-    }
-  );
+  test("DELETE /api/comments/:comment_id, responds with status 204 deletes the comment with given comment Id", () => {
+    return request(app).delete("/api/comments/1").expect(204);
+  });
+
+  test("DELETE /api/comments/:comment_id, responds with psql error and status 400 and msg Not Found when given comment Id is of wrong data type", () => {
+    return request(app)
+      .delete("/api/comments/a")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
 });

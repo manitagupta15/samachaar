@@ -6,6 +6,7 @@ const {
   fetchCommentsByArticleId,
   fetchArticlesWithCommentCount,
   insertComment,
+  deleteComment,
 } = require("../model/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -93,7 +94,7 @@ exports.deleteCommentByCommentId = (req, res, next) => {
   const { comment_id } = req.params;
   deleteComment(comment_id)
     .then(() => {
-      res.status(204).send({ msg: "deleted comment" });
+      res.status(204).send();
     })
     .catch((err) => {
       next(err);
