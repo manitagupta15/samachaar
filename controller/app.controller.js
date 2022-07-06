@@ -1,3 +1,5 @@
+const { jsonFile } = require("../endpoints.json");
+
 const {
   fetchTopics,
   fetchArticles,
@@ -6,6 +8,7 @@ const {
   fetchCommentsByArticleId,
   fetchArticlesWithCommentCount,
   insertComment,
+  getData,
   deleteComment,
 } = require("../model/app.model");
 
@@ -93,6 +96,13 @@ exports.postComment = (req, res, next) => {
       next(err);
     });
 };
+
+exports.getAllapi = (req, res, next) => {
+  const data = getData();
+
+  res.status(200).send({ data });
+
+}
 
 exports.deleteCommentByCommentId = (req, res, next) => {
   const { comment_id } = req.params;

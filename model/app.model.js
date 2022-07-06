@@ -1,5 +1,8 @@
 const db = require("../db/connection");
 const format = require("pg-format");
+const fs = require("fs/promises");
+const jsonfile = require("../endpoints.json");
+const { dirname } = require("path");
 
 exports.fetchTopics = () => {
   return db.query(`SELECT * FROM topics;`).then(({ rows }) => {
@@ -165,6 +168,10 @@ exports.insertComment = (article_id, username, body, mybody) => {
       return rows[0];
     });
 };
+
+exports.getData = () => {
+  return jsonfile;
+}
 
 exports.deleteComment = (comment_id) => {
   return db
