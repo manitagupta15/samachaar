@@ -12,6 +12,8 @@ const {
   getArticles,
   postComment,
   getAllapi,
+
+  deleteCommentByCommentId,
 } = require("./controller/app.controller");
 
 const {
@@ -36,6 +38,7 @@ app.get("/api/users", getUsers);
 app.post("/api/articles/:article_id/comments", postComment);
 
 app.get("/api", getAllapi);
+app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
 
 app.all("/*", invalidPathError);
 
