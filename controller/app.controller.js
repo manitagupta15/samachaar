@@ -92,3 +92,7 @@ exports.postComment = (req, res, next) => {
       next(err);
     });
 };
+
+exports.getAllapi = (req, res, next) => {
+  
+};
