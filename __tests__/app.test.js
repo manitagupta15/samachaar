@@ -460,4 +460,62 @@ describe("GET /api/articles (queries)", () => {
         expect(articles).toHaveLength(0);
       });
   });
+
+  test("GET /api/articles (queries) Topic,sortby,order, which responds with status 200 and array of articles when given topic, sortby and order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=article_id&topic=mitch&order=ASC")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+        expect(articles).toHaveLength(4);
+
+        expect(articles).toBeSortedBy("article_id", {
+          descending: false,
+          coerce: false,
+        });
+
+        expect(articles).toEqual([
+          {
+            article_id: 1,
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            comment_count: 11,
+            created_at: "2020-07-09T20:11:00.000Z",
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            votes: 100,
+          },
+          {
+            article_id: 3,
+            author: "icellusedkars",
+            body: "some gifs",
+            comment_count: 2,
+            created_at: "2020-11-03T09:12:00.000Z",
+            title: "Eight pug gifs that remind me of mitch",
+            topic: "mitch",
+            votes: 0,
+          },
+          {
+            article_id: 6,
+            author: "icellusedkars",
+            body: "Delicious tin of cat food",
+            comment_count: 1,
+            created_at: "2020-10-18T01:00:00.000Z",
+            title: "A",
+            topic: "mitch",
+            votes: 0,
+          },
+          {
+            article_id: 9,
+            author: "butter_bridge",
+            body: "Well? Think about it.",
+            comment_count: 2,
+            created_at: "2020-06-06T09:10:00.000Z",
+            title: "They're not exactly dogs, are they?",
+            topic: "mitch",
+            votes: 0,
+          },
+        ]);
+      });
+  });
 });
