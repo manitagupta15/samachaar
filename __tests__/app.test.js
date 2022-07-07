@@ -60,7 +60,7 @@ describe("GET /api/articles/:article_id", () => {
           body: "I find this existence challenging",
           created_at: "2020-07-09T20:11:00.000Z",
           votes: 100,
-          comment_count: "11",
+          comment_count: 11,
         });
       });
   });
@@ -654,6 +654,85 @@ describe("PATCH /api/comments/:comment_id", () => {
       .expect(400)
       .then(({ body: { msg } }) => {
         expect(msg).toBe("Bad Request");
+      });
+  });
+});
+
+describe("POST /api/articles", () => {
+  test("POST /api/articles responds with status 201 and newly created article", () => {
+    const input = {
+      title: "Sony The Laptop",
+      topic: "mitch",
+      author: "icellusedkars",
+      body: "Call me Mitchell",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(input)
+      .expect(201)
+      .then(({ body: { article } }) => {
+        expect(article).toEqual({
+          article_id: expect.any(Number),
+          title: "Sony The Laptop",
+          topic: "mitch",
+          author: "icellusedkars",
+          body: "Call me Mitchell",
+          created_at: expect.any(String),
+          votes: 0,
+          comment_count: 0,
+        });
+      });
+  });
+
+  test("POST /api/articles responds with status code 400 author is not a valid username from users table", () => {
+    const newArticle = {
+      title: "Sony The Laptop",
+      topic: "mitch",
+      author: "Hello",
+      body: "Call me Mitchell",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("POST /api/articles responds with psql error status code 400 if keys are missing from the input body (body missing here)", () => {
+    const newArticle = {
+      title: "Sony The Laptop",
+      topic: "mitch",
+      author: "Hello",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("POST /api/articles/:article_id/comments responds with psql error status code 400 if wrong key is passed in", () => {
+    const newArticle = {
+      title: "Sony The Laptop",
+      topic: "mitch",
+      author: "Hello",
+      body: "Call me Mitchell",
+      name: "hery",
+    };
+
+    return request(app)
+      .post("/api/articles")
+      .send(newArticle)
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Invalid Body keys.. sorry!!!");
       });
   });
 });

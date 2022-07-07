@@ -12,6 +12,7 @@ const {
   deleteComment,
   fetchUser,
   updateVoteByCommentId,
+  insertArticle,
 } = require("../model/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -133,6 +134,16 @@ exports.patchComment = (req, res, next) => {
   updateVoteByCommentId(comment_id, inc_votes, req.body)
     .then((comment) => {
       res.status(200).send({ comment });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.postArticle = (req, res, next) => {
+  insertArticle(req.body)
+    .then((article) => {
+      res.status(201).send({ article });
     })
     .catch((err) => {
       next(err);
