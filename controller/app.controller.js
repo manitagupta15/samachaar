@@ -10,6 +10,7 @@ const {
   insertComment,
   getData,
   deleteComment,
+  fetchUser,
 } = require("../model/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -101,14 +102,24 @@ exports.getAllapi = (req, res, next) => {
   const data = getData();
 
   res.status(200).send({ data });
-
-}
+};
 
 exports.deleteCommentByCommentId = (req, res, next) => {
   const { comment_id } = req.params;
   deleteComment(comment_id)
     .then(() => {
       res.status(204).send();
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.getUsername = (req, res, next) => {
+  const { username } = req.params;
+  fetchUser(username)
+    .then((user) => {
+      res.status(200).send({ user });
     })
     .catch((err) => {
       next(err);
