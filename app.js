@@ -3,6 +3,8 @@ const app = express();
 
 app.use(express.json());
 
+const apiRouter = require("./routes/api-router");
+/*
 const {
   getTopics,
   getArticlesByArticleId,
@@ -15,14 +17,14 @@ const {
 
   deleteCommentByCommentId,
 } = require("./controller/app.controller");
-
+*/
 const {
   psqlErrorHandler,
   handleCustomErrors,
   unhandledErrors,
   invalidPathError,
 } = require("./errorHandler/errorHandler");
-
+/*
 app.get("/api/topics", getTopics);
 
 app.get("/api/articles/:article_id", getArticlesByArticleId);
@@ -39,10 +41,12 @@ app.post("/api/articles/:article_id/comments", postComment);
 
 app.get("/api", getAllapi);
 app.delete("/api/comments/:comment_id", deleteCommentByCommentId);
+*/
 
-app.all("/*", invalidPathError);
+app.use("/api", apiRouter);
 
 //error handlers
+app.all("/*", invalidPathError);
 app.use(psqlErrorHandler);
 app.use(handleCustomErrors);
 app.use(unhandledErrors);
