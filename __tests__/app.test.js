@@ -556,3 +556,39 @@ describe("Get /api", () => {
       });
   });
 });
+
+describe("GET /api/users/:username", () => {
+  test("GET /api/users/:username reponds with status 200 and user Object with given username", () => {
+    return request(app)
+      .get("/api/users/butter_bridge")
+      .expect(200)
+      .then(({ body: { user } }) => {
+        expect(typeof user).toBe("object");
+
+        expect(user).toEqual({
+          username: "butter_bridge",
+          name: "jonny",
+          avatar_url:
+            "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+        });
+      });
+  });
+
+  test("GET /api/users/:username reponds with status 404 and username doesnot exist", () => {
+    return request(app)
+      .get("/api/users/butter")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("username not present");
+      });
+  });
+
+  test("GET /api/users/:username reponds with error status 404 when username is of wrong data type", () => {
+    return request(app)
+      .get("/api/users/butter")
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("username not present");
+      });
+  });
+});

@@ -115,5 +115,18 @@
     "description": "deletes a specific comment from the comments table",
     "queries": [],
     "exampleResponse": "204, No Content"
+  },
+
+  "GET /api/users/:username": {
+    "description": "serves an user Object",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "user_id": 3,
+        "username": "icellusedkars",
+        "name": "sam",
+        "avatar_url": "https://avatars2.githubusercontent.com/u/24604688?s=460&v=4"
+      }
+    }
   }
 }

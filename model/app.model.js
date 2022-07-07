@@ -171,7 +171,7 @@ exports.insertComment = (article_id, username, body, mybody) => {
 
 exports.getData = () => {
   return jsonfile;
-}
+};
 
 exports.deleteComment = (comment_id) => {
   return db
@@ -181,5 +181,16 @@ exports.deleteComment = (comment_id) => {
         return Promise.reject({ status: 404, msg: "Invalid Comment_id" });
       }
       return rows;
+    });
+};
+
+exports.fetchUser = (username) => {
+  return db
+    .query(`SELECT * FROM users WHERE username = $1`, [username])
+    .then(({ rows }) => {
+      if (rows.length === 0) {
+        return Promise.reject({ status: 404, msg: "username not present" });
+      }
+      return rows[0];
     });
 };
