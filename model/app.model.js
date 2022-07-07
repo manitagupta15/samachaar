@@ -14,7 +14,7 @@ exports.fetchArticles = (article_id) => {
   return db
     .query(
       `
-    SELECT articles.*,COUNT(comments.article_id) AS comment_count 
+    SELECT articles.*,COUNT(comments.article_id) ::INT AS comment_count 
     FROM articles 
     JOIN comments ON comments.article_id= articles.article_id
     WHERE articles.article_id = $1
@@ -201,5 +201,43 @@ exports.updateVoteByCommentId = (comment_id, inc_votes) => {
     )
     .then(({ rows }) => {
       return rows[0];
+    });
+};
+
+exports.insertArticle = (reqBody) => {
+  const { author, title, body, topic } = reqBody;
+
+  if (Object.keys(reqBody).length > 0) {
+    const validRequestkeys = ["author", "title", "body", "topic"];
+
+    for (let key in reqBody) {
+      if (!validRequestkeys.includes(key)) {
+        return Promise.reject({
+          status: 404,
+          msg: "Invalid Body keys.. sorry!!!",
+        });
+      }
+    }
+  }
+
+  return db
+    .query(
+      `INSERT INTO articles (author, title, body, topic) VALUES ($1,$2,$3,$4) RETURNING *`,
+      [author, title, body, topic]
+    )
+    .then(({ rows }) => {
+      const { article_id } = rows[0];
+
+      return db
+        .query(
+          `SELECT articles.*, COUNT(comments.article_id) ::INT AS comment_count FROM articles 
+          LEFT JOIN comments ON articles.article_id = comments.article_id 
+          WHERE articles.article_id = $1 
+          GROUP BY articles.article_id`,
+          [article_id]
+        )
+        .then(({ rows }) => {
+          return rows[0];
+        });
     });
 };
