@@ -592,3 +592,68 @@ describe("GET /api/users/:username", () => {
       });
   });
 });
+
+describe("PATCH /api/comments/:comment_id", () => {
+  test("PATCH /api/comments/:comment_id responds with status 200 and the updated comment", () => {
+    const input = { inc_votes: 3 };
+
+    return request(app)
+      .patch("/api/comments/2")
+      .send(input)
+      .expect(200)
+      .then(({ body: { comment } }) => {
+        expect(comment).toEqual({
+          comment_id: 2,
+          body: "The beautiful thing about treasure is that it exists. Got to find out what kind of sheets these are; not cotton, not rayon, silky.",
+          article_id: 1,
+          author: "butter_bridge",
+          votes: 17,
+          created_at: "2020-10-31T03:03:00.000Z",
+        });
+      });
+  });
+
+  test("patch /api/comments/:comment_id, responds with a status code 400 when no body given", () => {
+    const incVote = {};
+    return request(app)
+      .patch("/api/comments/2")
+      .send(incVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("patch /api/comments/:comment_id,endpoint should respond with psql error with a status 400 if comment id is of wrong data type", () => {
+    const incVote = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/comments/a")
+      .send(incVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("patch /api/comments/comment_id, responds with a status code 400 when wrong key is passed in body", () => {
+    const incVote = { invotes: 1 };
+    return request(app)
+      .patch("/api/comments/3")
+      .send(incVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("patch /api/comments/comment_id, responds with a psql error status code 400 when key value is not a number", () => {
+    const incVote = { inc_votes: "a" };
+    return request(app)
+      .patch("/api/comments/3")
+      .send(incVote)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+});

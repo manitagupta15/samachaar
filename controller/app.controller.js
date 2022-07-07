@@ -11,6 +11,7 @@ const {
   getData,
   deleteComment,
   fetchUser,
+  updateVoteByCommentId,
 } = require("../model/app.model");
 
 exports.getTopics = (req, res, next) => {
@@ -120,6 +121,18 @@ exports.getUsername = (req, res, next) => {
   fetchUser(username)
     .then((user) => {
       res.status(200).send({ user });
+    })
+    .catch((err) => {
+      next(err);
+    });
+};
+
+exports.patchComment = (req, res, next) => {
+  const { comment_id } = req.params;
+  const { inc_votes } = req.body;
+  updateVoteByCommentId(comment_id, inc_votes, req.body)
+    .then((comment) => {
+      res.status(200).send({ comment });
     })
     .catch((err) => {
       next(err);
