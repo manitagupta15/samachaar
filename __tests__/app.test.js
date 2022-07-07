@@ -367,7 +367,7 @@ describe("GET /api/articles (queries)", () => {
       });
   });
 
-  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid query key is not passed(sort_by,order,topic)", () => {
+  test("GET /api/articles (queries) sort_by responds with status 404 and error mesaage if valid query key is not passed(sort_by,order,topic)", () => {
     return request(app)
       .get("/api/articles?inValidQueryKey=article_id")
       .expect(404)
@@ -376,7 +376,7 @@ describe("GET /api/articles (queries)", () => {
       });
   });
 
-  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
+  test("GET /api/articles (queries) sort_by responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
     return request(app)
       .get("/api/articles?sort_by=Hello")
       .expect(404)
@@ -397,7 +397,7 @@ describe("GET /api/articles (queries)", () => {
       });
   });
 
-  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
+  test("GET /api/articles (queries) Order responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
     return request(app)
       .get("/api/articles?order=Hello")
       .expect(404)
@@ -541,6 +541,26 @@ describe("GET /api/articles (queries)", () => {
             votes: 0,
           },
         ]);
+      });
+  });
+
+  test("GET /api/article (queries) limit, which responds with status 200 and array of articles with given limit", () => {
+    return request(app)
+      .get("/api/articles?limit=2")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+
+        expect(articles).toHaveLength(2);
+      });
+  });
+
+  test("GET /api/article (queries) limit, which responds with error status 400 when wrong datatype of limit is given", () => {
+    return request(app)
+      .get("/api/articles?limit=NOLIMIT")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
       });
   });
 });
