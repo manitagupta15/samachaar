@@ -441,6 +441,7 @@ describe("GET /api/articles (queries)", () => {
             created_at: "2020-11-03T09:12:00.000Z",
             votes: 0,
             comment_count: 2,
+            total_count: 4,
           },
           {
             article_id: 6,
@@ -451,6 +452,7 @@ describe("GET /api/articles (queries)", () => {
             created_at: "2020-10-18T01:00:00.000Z",
             votes: 0,
             comment_count: 1,
+            total_count: 4,
           },
           {
             article_id: 1,
@@ -461,6 +463,7 @@ describe("GET /api/articles (queries)", () => {
             created_at: "2020-07-09T20:11:00.000Z",
             votes: 100,
             comment_count: 11,
+            total_count: 4,
           },
           {
             article_id: 9,
@@ -471,6 +474,7 @@ describe("GET /api/articles (queries)", () => {
             created_at: "2020-06-06T09:10:00.000Z",
             votes: 0,
             comment_count: 2,
+            total_count: 4,
           },
         ]);
       });
@@ -509,6 +513,7 @@ describe("GET /api/articles (queries)", () => {
             title: "Living in the shadow of a great man",
             topic: "mitch",
             votes: 100,
+            total_count: 4,
           },
           {
             article_id: 3,
@@ -519,6 +524,7 @@ describe("GET /api/articles (queries)", () => {
             title: "Eight pug gifs that remind me of mitch",
             topic: "mitch",
             votes: 0,
+            total_count: 4,
           },
           {
             article_id: 6,
@@ -529,6 +535,7 @@ describe("GET /api/articles (queries)", () => {
             title: "A",
             topic: "mitch",
             votes: 0,
+            total_count: 4,
           },
           {
             article_id: 9,
@@ -539,8 +546,10 @@ describe("GET /api/articles (queries)", () => {
             title: "They're not exactly dogs, are they?",
             topic: "mitch",
             votes: 0,
+            total_count: 4,
           },
-        ]);
+        ])
+        expect(articles[0].total_count).toBe(4);
       });
   });
 
@@ -563,6 +572,53 @@ describe("GET /api/articles (queries)", () => {
         expect(msg).toBe("Bad Request");
       });
   });
+
+  test("GET /api/article (queries) p, which responds with status 200 and array of articles with the limit after the offset", () => {
+    return request(app)
+      .get("/api/articles?limit=2&p=2")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+
+        expect(articles).toHaveLength(2); // as there are total 5 articles in articles table. so 2 article found on page 2 as limit is 2
+        expect(articles).toEqual([
+          {
+            article_id: 5,
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            topic: "cats",
+            author: "rogersop",
+            body: "Bastet walks amongst us, and the cats are taking arms!",
+            created_at: "2020-08-03T13:14:00.000Z",
+            votes: 0,
+            comment_count: 2,
+            total_count: 5,
+          },
+          {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: "2020-07-09T20:11:00.000Z",
+            votes: 100,
+            comment_count: 11,
+            total_count: 5,
+          },
+        ]);
+        expect(articles[0].total_count).toBe(5);
+      });
+  });
+
+  // test("GET /api/article (queries) p, which responds with status 404 and when no article found on given page(less number of article to have another page)", () => {
+  //   return request(app)
+  //     .get("/api/articles?p=6")
+  //     .expect(404)
+  //     .then(({ body: { msg } }) => {
+  //       expect(msg).toBe(
+  //         "Number of records are less than given limit or default limit of 10"
+  //       );
+  //     });
+  // });
 });
 
 describe("Get /api", () => {
