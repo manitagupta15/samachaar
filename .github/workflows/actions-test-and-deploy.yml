@@ -11,7 +11,7 @@ jobs:
     steps:
       - name: Say Hello
         run: echo "Hello testing github actions!!"
-  tests:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: checkout and clone repo
@@ -26,3 +26,16 @@ jobs:
           postgresql password: any
       - name: Run integration tests
         run: PGDATABASE=nc_news_test PGUSER=Manita PGPASSWORD=any npm test
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: checkout and clone repo
+        uses: actions/checkout@v2
+      -name: Deploy to Heroku
+        uses: akhileshns/heroku-deploy@3.12.12
+          with:
+            heroku_api_key: ${{secrets.HEROKU_API_KEY}}
+            heroku_app_name: ${{secrets.HEROKU_APP_NAME}}
+            heroku_email: ${{secrests.HEROKU_EMAIL}}
+
