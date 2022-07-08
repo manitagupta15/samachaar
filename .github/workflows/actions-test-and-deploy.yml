@@ -25,4 +25,4 @@ jobs:
           postgresql user: Manita
           postgresql password: any
       - name: Run integration tests
-        run: PGDATABASE=nc_news_test PGUSER:Manita PGPASSWORD=any npm test
+        run: PGDATABASE=nc_news_test PGUSER:Manita PGPASSWORD:any npm test
