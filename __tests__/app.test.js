@@ -171,7 +171,7 @@ describe("Patch /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("Get /api/articles endpoint should respond with status 200 and a array of articles objects, each having author, title, article_id, topic, created_at, votes and comment_count properties", () => {
+  test("Get /api/articles endpoint should respond with status 200 and a array of articles objects, each having author, title, article_id, topic, created_at, votes,total_count and comment_count properties", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -195,6 +195,7 @@ describe("GET /api/articles", () => {
               votes: expect.any(Number),
               body: expect.any(String),
               comment_count: expect.any(Number),
+              total_count: expect.any(Number),
             })
           );
         });
@@ -548,7 +549,7 @@ describe("GET /api/articles (queries)", () => {
             votes: 0,
             total_count: 4,
           },
-        ])
+        ]);
         expect(articles[0].total_count).toBe(4);
       });
   });
@@ -608,17 +609,6 @@ describe("GET /api/articles (queries)", () => {
         expect(articles[0].total_count).toBe(5);
       });
   });
-
-  // test("GET /api/article (queries) p, which responds with status 404 and when no article found on given page(less number of article to have another page)", () => {
-  //   return request(app)
-  //     .get("/api/articles?p=6")
-  //     .expect(404)
-  //     .then(({ body: { msg } }) => {
-  //       expect(msg).toBe(
-  //         "Number of records are less than given limit or default limit of 10"
-  //       );
-  //     });
-  // });
 });
 
 describe("Get /api", () => {
