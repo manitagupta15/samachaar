@@ -11,3 +11,18 @@ jobs:
     steps:
       - name: Say Hello
         run: echo "Hello testing github actions!!"
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout and clone repo
+        uses: actions/checkout@v2
+      - name: Install Dependencies
+        run: npm install
+      - name: Setup Postgres
+        uses: harmon758/postgresql-action@v1
+        with:
+          postgresql db: nc_news_test
+          postgresql user: Manita
+          postgresql password: any
+      -name: Run integration tests
+        run: PGDATABASE=nc_news_test PGUSER:Manita PGPASSWORD=any npm test
