@@ -171,7 +171,7 @@ describe("Patch /api/articles/:article_id", () => {
 });
 
 describe("GET /api/articles", () => {
-  test("Get /api/articles endpoint should respond with status 200 and a array of articles objects, each having author, title, article_id, topic, created_at, votes and comment_count properties", () => {
+  test("Get /api/articles endpoint should respond with status 200 and a array of articles objects, each having author, title, article_id, topic, created_at, votes,total_count and comment_count properties", () => {
     return request(app)
       .get("/api/articles")
       .expect(200)
@@ -195,6 +195,7 @@ describe("GET /api/articles", () => {
               votes: expect.any(Number),
               body: expect.any(String),
               comment_count: expect.any(Number),
+              total_count: expect.any(Number),
             })
           );
         });
@@ -367,7 +368,7 @@ describe("GET /api/articles (queries)", () => {
       });
   });
 
-  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid query key is not passed(sort_by,order,topic)", () => {
+  test("GET /api/articles (queries) sort_by responds with status 404 and error mesaage if valid query key is not passed(sort_by,order,topic)", () => {
     return request(app)
       .get("/api/articles?inValidQueryKey=article_id")
       .expect(404)
@@ -376,7 +377,7 @@ describe("GET /api/articles (queries)", () => {
       });
   });
 
-  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
+  test("GET /api/articles (queries) sort_by responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
     return request(app)
       .get("/api/articles?sort_by=Hello")
       .expect(404)
@@ -397,7 +398,7 @@ describe("GET /api/articles (queries)", () => {
       });
   });
 
-  test("GET /api/articles (queries) responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
+  test("GET /api/articles (queries) Order responds with status 404 and error mesaage if valid column is not passed--article_id, title, topic, author, body, created_at, votes", () => {
     return request(app)
       .get("/api/articles?order=Hello")
       .expect(404)
@@ -441,6 +442,7 @@ describe("GET /api/articles (queries)", () => {
             created_at: expect.any(String),
             votes: 0,
             comment_count: 2,
+            total_count: 4,
           },
           {
             article_id: 6,
@@ -451,6 +453,7 @@ describe("GET /api/articles (queries)", () => {
             created_at: expect.any(String),
             votes: 0,
             comment_count: 1,
+            total_count: 4,
           },
           {
             article_id: 1,
@@ -461,6 +464,7 @@ describe("GET /api/articles (queries)", () => {
             created_at: expect.any(String),
             votes: 100,
             comment_count: 11,
+            total_count: 4,
           },
           {
             article_id: 9,
@@ -471,6 +475,7 @@ describe("GET /api/articles (queries)", () => {
             created_at: expect.any(String),
             votes: 0,
             comment_count: 2,
+            total_count: 4,
           },
         ]);
       });
@@ -509,6 +514,7 @@ describe("GET /api/articles (queries)", () => {
             title: "Living in the shadow of a great man",
             topic: "mitch",
             votes: 100,
+            total_count: 4,
           },
           {
             article_id: 3,
@@ -519,6 +525,7 @@ describe("GET /api/articles (queries)", () => {
             title: "Eight pug gifs that remind me of mitch",
             topic: "mitch",
             votes: 0,
+            total_count: 4,
           },
           {
             article_id: 6,
@@ -529,6 +536,7 @@ describe("GET /api/articles (queries)", () => {
             title: "A",
             topic: "mitch",
             votes: 0,
+            total_count: 4,
           },
           {
             article_id: 9,
@@ -539,8 +547,66 @@ describe("GET /api/articles (queries)", () => {
             title: "They're not exactly dogs, are they?",
             topic: "mitch",
             votes: 0,
+            total_count: 4,
           },
         ]);
+        expect(articles[0].total_count).toBe(4);
+      });
+  });
+
+  test("GET /api/article (queries) limit, which responds with status 200 and array of articles with given limit", () => {
+    return request(app)
+      .get("/api/articles?limit=2")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+
+        expect(articles).toHaveLength(2);
+      });
+  });
+
+  test("GET /api/article (queries) limit, which responds with error status 400 when wrong datatype of limit is given", () => {
+    return request(app)
+      .get("/api/articles?limit=NOLIMIT")
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad Request");
+      });
+  });
+
+  test("GET /api/article (queries) p, which responds with status 200 and array of articles with the limit after the offset", () => {
+    return request(app)
+      .get("/api/articles?limit=2&p=2")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles).toBeInstanceOf(Array);
+
+        expect(articles).toHaveLength(2); // as there are total 5 articles in articles table. so 2 article found on page 2 as limit is 2
+        expect(articles).toEqual([
+          {
+            article_id: 5,
+            title: "UNCOVERED: catspiracy to bring down democracy",
+            topic: "cats",
+            author: "rogersop",
+            body: "Bastet walks amongst us, and the cats are taking arms!",
+            created_at: expect.any(String),
+            votes: 0,
+            comment_count: 2,
+            total_count: 5,
+          },
+          {
+            article_id: 1,
+            title: "Living in the shadow of a great man",
+            topic: "mitch",
+            author: "butter_bridge",
+            body: "I find this existence challenging",
+            created_at: expect.any(String),
+            votes: 100,
+            comment_count: 11,
+            total_count: 5,
+          },
+        ]);
+        expect(articles[0].total_count).toBe(5);
       });
   });
 });

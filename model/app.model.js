@@ -81,10 +81,12 @@ exports.fetchArticlesWithCommentCount = (
   sort_by = "created_at",
   order = "DESC",
   topic,
+  limit = 10,
+  p = 1,
   reqQuery
 ) => {
   if (Object.keys(reqQuery).length > 0) {
-    const validOptionsKeys = ["sort_by", "order", "topic"];
+    const validOptionsKeys = ["sort_by", "order", "topic", "limit", "p"];
 
     for (let key in reqQuery) {
       if (!validOptionsKeys.includes(key)) {
@@ -121,26 +123,26 @@ exports.fetchArticlesWithCommentCount = (
     });
   }
 
-  let queryString = `SELECT articles.*, COUNT(comments.article_id) as comment_count FROM articles
-  JOIN comments ON articles.article_id = comments.article_id
-  GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`;
+  const offset = limit * (p - 1);
+
+  let queryString = format(
+    `SELECT articles.*, COUNT(comments.article_id) ::INT AS comment_count, COUNT(*) OVER() ::INT AS total_count FROM articles
+        JOIN comments ON articles.article_id = comments.article_id
+        GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT $1 OFFSET $2
+  `
+  );
 
   if (topic !== undefined) {
     queryString = format(
-      `SELECT articles.*, COUNT(comments.article_id) as comment_count FROM articles
-  JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic LIKE '${topic}'
-  GROUP BY articles.article_id ORDER BY ${sort_by} ${order}`,
-      [topic]
+      `SELECT articles.*, COUNT(comments.article_id) ::INT AS comment_count, COUNT(*) OVER() ::INT AS total_count FROM articles
+          JOIN comments ON articles.article_id = comments.article_id WHERE articles.topic LIKE '${topic}'
+          GROUP BY articles.article_id ORDER BY ${sort_by} ${order} LIMIT $1 OFFSET $2`
     );
   }
 
-  return db.query(queryString).then(({ rows }) => {
-    const articlesWithFormattedCount = rows.map((article) => {
-      const articleCopy = { ...article };
-      articleCopy.comment_count = +article.comment_count;
-      return articleCopy;
-    });
-    return articlesWithFormattedCount;
+  return db.query(queryString, [limit, offset]).then(({ rows }) => {
+    const { total_count } = rows;
+    return rows;
   });
 };
 
