@@ -289,6 +289,7 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(11);
 
+        console.log(comments, "<--from test");
         comments.forEach((comment) => {
           expect(comment).toEqual(
             expect.objectContaining({

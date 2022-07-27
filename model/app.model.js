@@ -66,8 +66,7 @@ exports.fetchCommentsByArticleId = (article_id) => {
     .then(() => {
       return db.query(
         `SELECT * FROM comments 
-      JOIN articles ON articles.article_id = comments.article_id 
-      WHERE comments.article_id =$1`,
+      WHERE article_id =$1`,
         [article_id]
       );
     })
