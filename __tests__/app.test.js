@@ -289,7 +289,6 @@ describe("GET /api/articles/:article_id/comments", () => {
         expect(comments).toBeInstanceOf(Array);
         expect(comments).toHaveLength(11);
 
-        console.log(comments, "<--from test");
         comments.forEach((comment) => {
           expect(comment).toEqual(
             expect.objectContaining({
@@ -482,13 +481,12 @@ describe("GET /api/articles (queries)", () => {
       });
   });
 
-  test("GET /api/articles (queries) Topic, which responds with status 200 and array of empty articles with given topic doesnot exist", () => {
+  test("GET /api/articles (queries) Topic, which responds with status 404 and ERROR message topic doesn't exist", () => {
     return request(app)
       .get("/api/articles?topic=Hello")
-      .expect(200)
-      .then(({ body: { articles } }) => {
-        expect(articles).toBeInstanceOf(Array);
-        expect(articles).toHaveLength(0);
+      .expect(404)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("topic doesn't exist");
       });
   });
 
