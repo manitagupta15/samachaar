@@ -141,6 +141,12 @@ exports.fetchArticlesWithCommentCount = (
 
   return db.query(queryString, [limit, offset]).then(({ rows }) => {
     const { total_count } = rows;
+
+    if (rows.length === 0) {
+      if (topic !== "football" || topic !== "cooking" || topic !== "coding") {
+        Promise.reject({ status: 404, msg: "topic doesn't exist" });
+      }
+    }
     return rows;
   });
 };
