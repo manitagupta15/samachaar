@@ -144,7 +144,7 @@ exports.fetchArticlesWithCommentCount = (
 
     if (rows.length === 0) {
       if (topic !== "football" || topic !== "cooking" || topic !== "coding") {
-        Promise.reject({ status: 404, msg: "topic doesn't exist" });
+        return Promise.reject({ status: 404, msg: "topic doesn't exist" });
       }
     }
     return rows;
